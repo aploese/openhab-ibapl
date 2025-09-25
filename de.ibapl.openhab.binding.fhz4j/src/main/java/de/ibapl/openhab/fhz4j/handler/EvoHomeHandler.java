@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -50,7 +50,7 @@ import de.ibapl.fhz4j.protocol.evohome.messages.ZoneConfigRequestMessage;
 import de.ibapl.fhz4j.protocol.evohome.messages.ZoneHeatDemandInformationMessage;
 import de.ibapl.fhz4j.protocol.evohome.messages.ZoneNamePayloadMessage;
 import de.ibapl.fhz4j.protocol.evohome.messages.ZoneNameRequestMessage;
-import de.ibapl.fhz4j.protocol.evohome.messages.ZoneSetpointInformationMessage;
+import de.ibapl.fhz4j.protocol.evohome.messages.ZoneSetpointOverrideInformationMessage;
 import de.ibapl.fhz4j.protocol.evohome.messages.ZoneSetpointRequestMessage;
 import static de.ibapl.openhab.fhz4j.FHZ4JBindingConstants.*;
 import java.io.FileNotFoundException;
@@ -60,7 +60,7 @@ import java.io.PrintStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -86,16 +86,14 @@ import org.openhab.core.types.RefreshType;
  */
 public class EvoHomeHandler extends BaseThingHandler {
 
-    class TestLogger {
+    static class TestLogger {
 
         private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_INSTANT;
         private final PrintStream TEST_LOG_OS;
         private Instant lastTS;
         private EvoHomeDeviceMessage lastMsg;
-        private final EvoHomeCommand cmd;
 
         public TestLogger(EvoHomeCommand cmd) {
-            this.cmd = cmd;
             try {
                 TEST_LOG_OS = new PrintStream(new FileOutputStream("EVO_HOME__" + cmd + "__" + DateTimeFormatter.ISO_INSTANT.format(Instant.now()) + ".log.txt"), false);
             } catch (FileNotFoundException ex) {
@@ -121,13 +119,18 @@ public class EvoHomeHandler extends BaseThingHandler {
 
     }
 
-    private final Map<EvoHomeCommand, TestLogger> loggers = new HashMap<>();
+    private final static Map<EvoHomeCommand, TestLogger> loggers = new EnumMap(EvoHomeCommand.class);
 
-    private void logEvoHomeMsg(EvoHomeDeviceMessage msg) {
+    private static void logEvoHomeMsg(EvoHomeDeviceMessage msg) {
         TestLogger logger = loggers.get(msg.command);
         if (logger == null) {
-            logger = new TestLogger(msg.command);
-            loggers.put(msg.command, logger);
+            synchronized (loggers) {
+                logger = loggers.get(msg.command);
+                if (logger == null) {
+                    logger = new TestLogger(msg.command);
+                    loggers.put(msg.command, logger);
+                }
+            }
         }
         logger.print(msg);
     }
@@ -280,7 +283,7 @@ public class EvoHomeHandler extends BaseThingHandler {
                             }
                         }
                         default -> {
-                            LOGGER.log(Level.SEVERE, "Can''t handle ZONE_SETPOINT (unknown deviceId1.type) message: {0}", msg);
+                            LOGGER.log(Level.SEVERE, "Can''t handle ZONE_CONFIG (unknown deviceId1.type) message: {0}", msg);
                         }
                     }
                 } else if (msg instanceof ZoneConfigRequestMessage m) {
@@ -291,6 +294,14 @@ public class EvoHomeHandler extends BaseThingHandler {
             }
             case UNKNOWN_3120 -> {
                 if (msg instanceof Unknown_0x3120InformationMessage uim) {
+                    logEvoHomeMsg(msg);
+                } else {
+                    LOGGER.log(Level.SEVERE, "Can''t handle {0} class: {1} message: {2}", new Object[]{msg.command, msg.getClass().getSimpleName(), msg});
+                }
+            }
+            case ZONE_SETPOINT_OVERRIDE -> {
+                if (msg instanceof ZoneSetpointOverrideInformationMessage zsoim) {
+                    //will be sent from the MULTI_ZONE_CONTROLLER to itself after a manual SetPoint Change
                     logEvoHomeMsg(msg);
                 } else {
                     LOGGER.log(Level.SEVERE, "Can''t handle {0} class: {1} message: {2}", new Object[]{msg.command, msg.getClass().getSimpleName(), msg});
@@ -325,14 +336,14 @@ public class EvoHomeHandler extends BaseThingHandler {
                     LOGGER.log(Level.SEVERE, "Can''t handle {0} class: {1} message: {2}", new Object[]{msg.command, msg.getClass().getSimpleName(), msg});
                 }
             }
-            case ZONE_SETPOINT_OVERRIDE -> {
+            /*            case ZONE_SETPOINT_OVERRIDE -> {
                 if (msg instanceof ZoneSetpointInformationMessage) {
                     logEvoHomeMsg(msg);
                 } else {
                     LOGGER.log(Level.SEVERE, "Can''t handle {0} class: {1} message: {2}", new Object[]{msg.command, msg.getClass().getSimpleName(), msg});
                 }
             }
-            case DEVICE_BATTERY_STATUS -> {
+             */ case DEVICE_BATTERY_STATUS -> {
                 if (msg instanceof DeviceBatteryStatusInformationMessage dbsim) {
                     switch (dbsim.deviceId1.type) {
                         case RADIATOR_CONTROLLER, SINGLE_ZONE_THERMOSTAT -> {
