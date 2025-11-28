@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="oh-ibapl-features-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.5.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
+    
+    <repository>mvn:org.openhab.core.features.karaf/org.openhab.core.features.karaf.openhab-core/${openhab.version}/xml/features</repository>
+
+    <feature name="openhab-binding-zendure" version="${project.version}" description="Zendure OH Binding">
+        <feature>openhab-runtime-base</feature>
+        <!-- TODO https://openhab.jfrog.io/openhab/libs-release/ contains an older one... -->
+        <!--feature>openhab-tp.gson</feature-->
+        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.zendure/${project.version}</bundle>
+    </feature>
+    
+</features>

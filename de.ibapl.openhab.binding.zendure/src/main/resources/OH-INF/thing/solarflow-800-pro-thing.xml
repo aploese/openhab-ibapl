@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zendure"
+                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+                          xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+	
+    <bridge-type id="solarflow-800-pro">
+        <label>@text/thing-type.zendure.solarflow-800-pro.label</label>
+        <description>@text/thing-type.zendure.solarflow-800-pro.description</description>
+        
+       
+        <channels>
+
+            <!-- PV related channels -->
+            <channel id="PvPower" typeId="PvPower" />  
+            <channel id="PvPowerPanel_1" typeId="PvPowerPanel_1" />
+            <channel id="PvPowerPanel_2" typeId="PvPowerPanel_2" />
+            <channel id="PvPowerPanel_3" typeId="PvPowerPanel_3" />
+            <channel id="PvPowerPanel_4" typeId="PvPowerPanel_4" />
+            
+            <!--Inverter related channels -->
+            <channel id="InverterPower" typeId="InverterPower" />
+            <channel id="InverterDesiredPower" typeId="InverterDesiredPower" />
+            <channel id="InverterOffGridPower" typeId="InverterOffGridPower" />
+            <channel id="InverterOffGridMode" typeId="InverterOffGridMode" />
+
+            <!--Batterie pack related channels -->
+            <channel id="BatteryPackHeating" typeId="BatteryPackHeating" />
+            <channel id="BatteryPackPower" typeId="BatteryPackPower" />
+            <channel id="BatteryPackCapacity" typeId="BatteryPackCapacity" />
+            <channel id="NumberOfBatteriesInPack" typeId="NumberOfBatteriesInPack" />
+            <channel id="BatteryPackStateOfCharge" typeId="BatteryPackStateOfCharge" />
+            <channel id="BatteryPackChargeLevelMax" typeId="BatteryPackChargeLevelMax" />
+            <channel id="BatteryPackDischargeLevelMin" typeId="BatteryPackDischargeLevelMin" />
+            
+            <channel id="BatteryPackRemainingDischargeTime" typeId="BatteryPackRemainingDischargeTime" />
+            <channel id="DeviceTemperature" typeId="DeviceTemperature" />
+            <channel id="GridStandard" typeId="GridStandard" />
+            <channel id="DeviceLampSwitch" typeId="DeviceLampSwitch" />
+            <channel id="DeviceFanMode" typeId="DeviceFanMode" />
+            <channel id="DeviceFanSpeed" typeId="DeviceFanSpeed" />
+            <channel id="SmartMode" typeId="SmartMode" />
+            <channel id="RSSI" typeId="RSSI" />
+            <channel id="InverterMaxPowerLimitIn" typeId="InverterMaxPowerLimitIn" />
+            <channel id="InverterMaxPowerLimitOut" typeId="InverterMaxPowerLimitOut" />
+            <channel id="GridReverseFlowMode" typeId="GridReverseFlowMode" />
+            <channel id="DeviceState" typeId="DeviceState" />
+
+        </channels>
+
+        <config-description>
+            <parameter name="url" type="text" required="true">
+                <label>URL</label>
+                <description>URL of the Zendure json api (e.g. http://solarflow-800-pro)</description>
+                <default>http://solarflow-800-pro</default>
+            </parameter>
+            <parameter name="refreshInterval" type="integer" min="1">
+                <label>Refresh Interval</label>
+                <description>States how often a refresh shall occur (in s).</description>
+                <default>1</default>
+            </parameter>
+        </config-description>
+        
+
+    </bridge-type>
+ 
+</thing:thing-descriptions>

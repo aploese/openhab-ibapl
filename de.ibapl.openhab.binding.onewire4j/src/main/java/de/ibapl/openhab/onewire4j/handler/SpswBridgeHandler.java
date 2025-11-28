@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -26,7 +26,7 @@ import de.ibapl.onewire4j.OneWireAdapter;
 import de.ibapl.onewire4j.container.OneWireContainer;
 import de.ibapl.onewire4j.container.TemperatureContainer;
 import de.ibapl.onewire4j.request.data.SearchCommand;
-import static de.ibapl.openhab.onewire4j.OneWire4JBindingConstants.THING_TYPE_ONEWIRE_TEMPERATURE;
+import de.ibapl.openhab.onewire4j.OneWire4JBindingConstants;
 import de.ibapl.spsw.api.SerialPortSocket;
 import de.ibapl.spsw.api.SerialPortSocketFactory;
 import de.ibapl.spsw.logging.LogExplainRead;
@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
@@ -45,8 +47,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.openhab.core.config.core.Configuration;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
@@ -66,8 +66,17 @@ public class SpswBridgeHandler extends BaseBridgeHandler {
 
     private final List<SerialPortSocketFactory> serialPortSocketFactories;
 
-    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Stream.of(THING_TYPE_ONEWIRE_TEMPERATURE)
-            .collect(Collectors.toSet());
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS;
+    
+    static {
+        Set<ThingTypeUID> result = new HashSet<>();
+        for (OneWire4JBindingConstants.ThingTypes type : OneWire4JBindingConstants.ThingTypes.values()) {
+            if (type.isBridge == false) {
+                result.add(type.thingTypeUID);
+            } 
+        }
+        SUPPORTED_THING_TYPES_UIDS = Collections.unmodifiableSet(result);
+    }
 
     private static final String PORT_PARAM = "port";
     private static final String REFRESH_RATE_PARAM = "refreshrate";

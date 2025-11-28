@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -34,7 +34,6 @@ import de.ibapl.fhz4j.protocol.hms.HmsMessage;
 import de.ibapl.fhz4j.protocol.lacrosse.tx2.LaCrosseTx2Message;
 import de.ibapl.openhab.fhz4j.FHZ4JBindingConstants;
 import de.ibapl.openhab.fhz4j.handler.SpswBridgeHandler;
-import de.ibapl.openhab.fhz4j.internal.FHZ4JHandlerFactory;
 import java.io.IOException;
 import java.util.Set;
 import java.util.logging.Level;
@@ -58,13 +57,13 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private final SpswBridgeHandler spswBridgeHandler;
 
     public FHZ4JDiscoveryService(SpswBridgeHandler spswBridgeHandler) {
-        super(FHZ4JHandlerFactory.SUPPORTED_THING_TYPES_UIDS, SEARCH_TIME, false);
+        super(SpswBridgeHandler.SUPPORTED_THING_TYPES_UIDS, SEARCH_TIME, false);
         this.spswBridgeHandler = spswBridgeHandler;
     }
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        return FHZ4JHandlerFactory.SUPPORTED_THING_TYPES_UIDS;
+        return SpswBridgeHandler.SUPPORTED_THING_TYPES_UIDS;
     }
 
     @Override
@@ -87,12 +86,14 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private void addHms100TfDevice(short housecode) {
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
         final String deviceIdStr = Short.toString(housecode);
-        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_HMS_100_TF);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.HMS_100_TF.thingTypeUID;
+        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID, thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_HMS_100_TF).withProperty("housecode", housecode)
-                .withBridge(bridgeUID).withRepresentationProperty(Short.toString(housecode))
+                .withThingType(thingTypeUID)
+                .withProperty("housecode", housecode)
+                .withBridge(bridgeUID)
+                .withRepresentationProperty(Short.toString(housecode))
                 .withLabel("HMS 100 TF " + housecode).build();
 
         thingDiscovered(discoveryResult);
@@ -101,12 +102,14 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private void addEm1000EmDevice(short address) {
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
         final String deviceIdStr = Short.toString(address);
-        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_EM_1000_EM);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.EM_1000_EM.thingTypeUID;
+        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID, thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_EM_1000_EM).withProperty("address", address)
-                .withBridge(bridgeUID).withRepresentationProperty(Short.toString(address))
+                .withThingType(thingTypeUID)
+                .withProperty("address", address)
+                .withBridge(bridgeUID)
+                .withRepresentationProperty(Short.toString(address))
                 .withLabel("EM 1000 EM " + address).build();
 
         thingDiscovered(discoveryResult);
@@ -115,11 +118,11 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private void addRadiatorEvoHomeDevice(int deviceId) {
         final String hexDeviceId = String.format("%06x", deviceId);
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
-        final ThingUID thingUID = getThingUID(hexDeviceId, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_EVO_HOME);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.RADIATOR_EVO_HOME.thingTypeUID;
+        final ThingUID thingUID = getThingUID(hexDeviceId, bridgeUID, thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_EVO_HOME)
+                .withThingType(thingTypeUID)
                 .withProperty("deviceId", deviceId)
                 .withBridge(bridgeUID)
                 .withRepresentationProperty(hexDeviceId)
@@ -132,13 +135,16 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private void addSingleZoneThermostatEvoHomeDevice(int deviceId) {
         final String hexDeviceId = String.format("%06x", deviceId);
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
-        final ThingUID thingUID = getThingUID(hexDeviceId, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_SINGLE_ZONE_THERMOSTAT_EVO_HOME);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.SINGLE_ZONE_THERMOSTAT_EVO_HOME.thingTypeUID;
+        final ThingUID thingUID = getThingUID(hexDeviceId, bridgeUID,thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_SINGLE_ZONE_THERMOSTAT_EVO_HOME)
-                .withProperty("deviceId", deviceId).withBridge(bridgeUID)
-                .withRepresentationProperty(hexDeviceId).withLabel("EvoHome Single Zone Thermostat 0x" + hexDeviceId).build();
+                .withThingType(thingTypeUID)
+                .withProperty("deviceId", deviceId)
+                .withBridge(bridgeUID)
+                .withRepresentationProperty(hexDeviceId)
+                .withLabel("EvoHome Single Zone Thermostat 0x" + hexDeviceId)
+                .build();
 
         thingDiscovered(discoveryResult);
     }
@@ -146,13 +152,16 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private void addMultiZoneControllerEvoHomeDevice(int deviceId) {
         final String hexDeviceId = String.format("%06x", deviceId);
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
-        final ThingUID thingUID = getThingUID(hexDeviceId, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_MULTI_ZONE_CONTROLLER_EVO_HOME);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.MULTI_ZONE_CONTROLLER_EVO_HOME.thingTypeUID;
+        final ThingUID thingUID = getThingUID(hexDeviceId, bridgeUID,thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_MULTI_ZONE_CONTROLLER_EVO_HOME)
-                .withProperty("deviceId", deviceId).withBridge(bridgeUID)
-                .withRepresentationProperty(hexDeviceId).withLabel("EvoHome Multi Zone Controller 0x" + hexDeviceId).build();
+                .withThingType(thingTypeUID)
+                .withProperty("deviceId", deviceId)
+                .withBridge(bridgeUID)
+                .withRepresentationProperty(hexDeviceId)
+                .withLabel("EvoHome Multi Zone Controller 0x" + hexDeviceId)
+                .build();
 
         thingDiscovered(discoveryResult);
     }
@@ -160,11 +169,11 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
     private void addFhtDevice(short housecode) {
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
         final String deviceIdStr = Short.toString(housecode);
-        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_FHT80B);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.RADIATOR_FHT80B.thingTypeUID;
+        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID,thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_FHT80B)
+                .withThingType(thingTypeUID)
                 .withProperty("housecode", housecode)
                 .withBridge(bridgeUID)
                 .withRepresentationProperty("housecode")
@@ -178,11 +187,11 @@ public class FHZ4JDiscoveryService extends AbstractDiscoveryService implements C
         final String hexAdress = String.format("%06x", address);
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
         final String deviceIdStr = hexAdress;
-        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID,
-                FHZ4JBindingConstants.THING_TYPE_FHZ4J_FHT80_TF);
+        final ThingTypeUID thingTypeUID = FHZ4JBindingConstants.ThingTypes.FHT80_TF.thingTypeUID;
+        final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID,thingTypeUID);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                .withThingType(FHZ4JBindingConstants.THING_TYPE_FHZ4J_FHT80_TF)
+                .withThingType(thingTypeUID)
                 .withProperty("address", hexAdress)
                 .withBridge(bridgeUID)
                 .withRepresentationProperty("address")

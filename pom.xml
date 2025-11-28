@@ -28,7 +28,7 @@
         </developer>
     </developers>
 
-    <description>Features and bindings for Eclipse Smart Home, see  https://www.eclipse.org/smarthome/.</description>
+    <description>Features and bindings for Open HAB, see  https://www.openhab.org/.</description>
     <inceptionYear>2017</inceptionYear>
     <!-- Licenses -->
     <licenses>
@@ -56,14 +56,17 @@
         <openhab.fhz4j.version>${project.version}</openhab.fhz4j.version>
         <openhab.onewire4j.version>${project.version}</openhab.onewire4j.version>
         <openhab.openv4j.version>${project.version}</openhab.openv4j.version>
-        <openhab.version.range>[5.0.0,6.0.0)</openhab.version.range>
-        <osgi.version.range>[8.0.0,9.0.0)</osgi.version.range>
+        <openhab.version>5.0.0</openhab.version>
+        <osgi.version>8.0.0</osgi.version>
+        <gson.version>2.13.1</gson.version>
         <oh.repo.baseUrl>https://openhab.jfrog.io/openhab</oh.repo.baseUrl>
     </properties>
 
     <modules>
         <module>de.ibapl.openhab.binding.fhz4j</module>
         <module>de.ibapl.openhab.binding.onewire4j</module>
+        <module>de.ibapl.openhab.binding.zendure</module>
+        <module>de.ibapl.openhab.automation.solarpowerdistributionmanager</module>
         <module>oh-ibapl-kar</module>
     </modules>
 
@@ -337,13 +340,13 @@
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>osgi.annotation</artifactId>
-                <version>${osgi.version.range}</version>
+                <version>${osgi.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>osgi.core</artifactId>
-                <version>${osgi.version.range}</version>
+                <version>${osgi.version}</version>
                 <scope>provided</scope>
             </dependency>
             
@@ -351,58 +354,82 @@
             <!--dependency>
                 <groupId>org.openhab.core.bundles</groupId>
                 <artifactId>org.openhab.core</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency-->
             <!--dependency>
                 <groupId>org.openhab.core.bom</groupId>
                 <artifactId>org.openhab.core.bom.compile-model</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency-->
             <!--dependency>
                 <groupId>org.openhab.core.bom</groupId>
                 <artifactId>org.openhab.core.bom.openhab-core</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency-->
             <!-- compile OH bom end -->
             
+            <dependency>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>org.eclipse.jdt.annotation</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+                <!-- TEST scope>provided</scope -->
+            </dependency>
             <!-- compile OH no bom begin -->
             <dependency>
                 <groupId>org.openhab.core.bundles</groupId>
+                <artifactId>org.openhab.core.io.net</artifactId>
+                <version>${openhab.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openhab.core.bundles</groupId>
                 <artifactId>org.openhab.core.thing</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openhab.core.bundles</groupId>
                 <artifactId>org.openhab.core.config.discovery</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openhab.core.bundles</groupId>
                 <artifactId>org.openhab.core.io.console</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.openhab.core.bundles</groupId>
+                <artifactId>org.openhab.core.automation</artifactId>
+                <version>${openhab.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!-- compile OH no bom end -->
 
             <dependency>
                 <groupId>org.openhab.core.bom</groupId>
                 <artifactId>org.openhab.core.bom.runtime</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <type>pom</type>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.openhab.core.bom</groupId>
                 <artifactId>org.openhab.core.bom.test</artifactId>
-                <version>${openhab.version.range}</version>
+                <version>${openhab.version}</version>
                 <type>pom</type>
                 <scope>test</scope>
             </dependency>

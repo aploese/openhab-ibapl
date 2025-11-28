@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="de.ibapl.openhab.automation.solarmanager-${project.version}">
+    <feature version="0.0.0">
+        <feature>openhab-runtime-base</feature>
+        <feature>wrap</feature>
+        <bundle>mvn:org.openhab.addons.bundles/de.ibapl.openhab.automation.solarmanager/${project.version}</bundle>
+    </feature>
+</features>

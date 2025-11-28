@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="oh-ibapl-features-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.5.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
+    
+    <repository>mvn:org.openhab.core.features.karaf/org.openhab.core.features.karaf.openhab-core/${openhab.version}/xml/features</repository>
+
+    <feature name="openhab-binding-fhz4j" version="${openhab.fhz4j.version}" description="Fhz4J OH Binding">
+        <feature>openhab-runtime-base</feature>
+        <feature>de.ibapl.spsw.jnhwprovider</feature>
+        <feature>de.ibapl.spsw.jniprovider</feature>
+        <bundle>mvn:de.ibapl.fhz4j/de.ibapl.fhz4j.parser.cul/${fhz4j.version}</bundle>
+        <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.fhz4j/${openhab.fhz4j.version}</bundle>
+    </feature>
+
+</features>

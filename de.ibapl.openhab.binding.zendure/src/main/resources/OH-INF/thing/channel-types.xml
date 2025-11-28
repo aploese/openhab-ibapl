@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="zendure"
+                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+                          xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+	
+    <!-- PV related channels -->
+    <channel-type id="PvPower">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.PvPower.label</label>
+        <description>@text/channel.PvPower.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="PvPowerPanel_1">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.PvPowerPanel_1.label</label>
+        <description>@text/channel.PvPowerPanel_1.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="PvPowerPanel_2">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.PvPowerPanel_2.label</label>
+        <description>@text/channel.PvPowerPanel_2.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="PvPowerPanel_3">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.PvPowerPanel_3.label</label>
+        <description>@text/channel.PvPowerPanel_3.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="PvPowerPanel_4">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.PvPowerPanel_4.label</label>
+        <description>@text/channel.PvPowerPanel_4.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+            
+    <!--Inverter related channels -->
+    <channel-type id="InverterPower">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.InverterPower.label</label>
+        <description>@text/channel.InverterPower.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="InverterDesiredPower">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.InverterDesiredPower.label</label>
+        <description>@text/channel.InverterDesiredPower.description</description>
+        <state pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="InverterOffGridPower">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.InverterOffGridPower.label</label>
+        <description>@text/channel.InverterOffGridPower.label</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>
+    <channel-type id="InverterOffGridMode">
+        <item-type>Number</item-type>
+        <label>@text/channel.InverterOffGridMode.label</label>
+        <description>@text/channel.InverterOffGridMode.description</description>
+        <state>
+            <options>
+                <option value="1034">  1034:PV___;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1035">  1035:PV-->;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1281">  1281:PV-->;BP___,cal,bypass,flow&lt;--;DC BP____;AC UG conn;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1288">  1288:PV___;BP___,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1290">  1290:PV___;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1291">  1291:PV-->;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1292">  1292:PV___;BP--&gt;,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1301">  1301:PV-->;BP--&gt;,cal,bypass,flow&lt;--;DC BP--&gt;;AC UG conn;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1546">  1546:PV___;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC  charge;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="1547">  1547:PV-->;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC  charge;UG conn;SOC  |&gt;&lt;|;Err _</option>
+                <option value="5121">  5121:PV-->;BP___,cal,bypass,flow&lt;--;DC BP____;AC _______;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5128">  5128:PV___;BP___,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5130">  5130:PV___;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5131">  5131:PV-->;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5132">  5132:PV___;BP--&gt;,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5141">  5141:PV-->;BP--&gt;,cal,bypass,flow&lt;--;DC BP--&gt;;AC _______;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5377">  5377:PV-->;BP___,cal,bypass,flow&lt;--;DC BP____;AC UG conn;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5386">  5386:PV___;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5388">  5388:PV___;BP--&gt;,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&lt;&lt;;Err _</option>
+                <option value="5397">  5397:PV-->;BP--&gt;,cal,bypass,flow&lt;--;DC BP--&gt;;AC UG conn;UG conn;SOC  |&lt;&lt;;Err _</option>
+            </options>
+        </state>
+    </channel-type>
+
+    <!--Batterie pack related channels -->
+    <channel-type id="BatteryPackHeating">
+        <item-type>Switch</item-type>
+        <label>@text/channel.BatteryPackHeating.label</label>
+        <description>@text/channel.BatteryPackHeating.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="BatteryPackPower">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.BatteryPackPower.label</label>
+        <description>@text/channel.BatteryPackPower.description</description>
+        <state readOnly="true" pattern="%f W"/>
+    </channel-type>  
+    <channel-type id="BatteryPackCapacity">
+        <item-type>Number:Energy</item-type>
+        <label>@text/channel.BatteryPackCapacity.label</label>
+        <description>@text/channel.BatteryPackCapacity.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="NumberOfBatteriesInPack">
+        <item-type>Number</item-type>
+        <label>@text/channel.NumberOfBatteriesInPack.label</label>
+        <description>@text/channel.NumberOfBatteriesInPack.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="BatteryPackStateOfCharge">
+        <item-type>Number</item-type>
+        <label>@text/channel.BatteryPackStateOfCharge.label</label>
+        <description>@text/channel.BatteryPackStateOfCharge.description</description>
+        <state readOnly="true" pattern="%f %" />
+    </channel-type>
+    <channel-type id="BatteryPackChargeLevelMax">
+        <item-type>Number</item-type>
+        <label>@text/channel.BatteryPackChargeLevelMax.label</label>
+        <description>@text/channel.BatteryPackChargeLevelMax.description</description>
+        <state min="50" max="100" step="1" pattern="%f %" />
+    </channel-type>
+    <channel-type id="BatteryPackDischargeLevelMin">
+        <item-type>Number</item-type>
+        <label>@text/channel.BatteryPackDischargeLevelMin.label</label>
+        <description>@text/channel.BatteryPackDischargeLevelMin.description</description>
+        <state min="10" max="50" step="1" pattern="%f %" />
+    </channel-type>
+    <channel-type id="DeviceState">
+        <item-type>Number</item-type>
+        <label>@text/channel.DeviceState.label</label>
+        <description>@text/channel.DeviceState.description</description>
+        <state readOnly="true" pattern="%s " >
+            <options>
+                <option value="0">Nothing set</option>
+                <option value="1292">  1292:PV___;BP--&gt;,cal,bypass,flow&lt;--;DC BP&lt;--;AC UG conn;UG conn;SOC  |&gt;&lt;| ;Err _</option>
+                <option value="5120">  5120:PV___;BP___,cal,bypass,flow&lt;--;DC BP____;AC _______;UG conn;SOC -|&lt;&lt;  ;Err _</option>
+                <option value="5121">  5121:PV-->;BP___,cal,bypass,flow&lt;--;DC BP____;AC _______;UG conn;SOC -|&lt;&lt;  ;Err _</option>
+                <option value="5130">  5130:PV___;BP&lt;--,cal,bypass,flow&lt;--;DC BP&lt;--;AC _______;UG conn;SOC -|&lt;&lt;  ;Err _</option>
+            </options>
+        </state>
+    </channel-type>
+    <channel-type id="BatteryPackRemainingDischargeTime">
+        <item-type>Number</item-type>
+        <label>@text/channel.BatteryPackRemainingDischargeTime.label</label>
+        <description>@text/channel.BatteryPackRemainingDischargeTime.description</description>
+        <state readOnly="true" pattern="%f min"/>
+    </channel-type>
+    <channel-type id="DeviceTemperature">
+        <item-type>Number:Temperature</item-type>
+        <label>@text/channel.DeviceTemperature.label</label>
+        <description>@text/channel.DeviceTemperature.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="GridStandard">
+        <item-type>Number</item-type>
+        <label>@text/channel.GridStandard.label</label>
+        <description>@text/channel.GridStandard.description</description>
+        <state>
+            <options>
+                <option value="0">@text/channel.GridStandard.GERMANY</option>
+                <option value="1">@text/channel.GridStandard.FRANCE</option>
+                <option value="2">@text/channel.GridStandard.AUSTRIA</option>
+            </options>
+        </state>
+    </channel-type>
+    <channel-type id="DeviceLampSwitch">
+        <item-type>Switch</item-type>
+        <label>@text/channel.DeviceLampSwitch.label</label>
+        <description>@text/channel.DeviceLampSwitch.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="DeviceFanMode">
+        <item-type>Switch</item-type>
+        <label>@text/channel.DeviceFanMode.label</label>
+        <description>@text/channel.DeviceFanMode.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="DeviceFanSpeed">
+        <item-type>Number</item-type>
+        <label>@text/channel.DeviceFanSpeed.label</label>
+        <description>@text/channel.DeviceFanSpeed.description</description>
+        <state readOnly="true" pattern="%f min⁻1"/>
+    </channel-type>
+    <channel-type id="SmartMode">
+        <item-type>Switch</item-type>
+        <label>@text/channel.SmartMode.label</label>
+        <description>@text/channel.SmartMode.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="RSSI">
+        <item-type>Number</item-type>
+        <label>@text/channel.RSSI.label</label>
+        <description>@text/channel.RSSI.description</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="InverterMaxPowerLimitIn">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.InverterMaxPowerLimitIn.label</label>
+        <description>@text/channel.InverterMaxPowerLimitIn.description</description>
+    </channel-type>
+    <channel-type id="InverterMaxPowerLimitOut">
+        <item-type>Number:Power</item-type>
+        <label>@text/channel.InverterMaxPowerLimitOut.label</label>
+        <description>@text/channel.InverterMaxPowerLimitOut.description</description>
+    </channel-type>
+    <channel-type id="GridReverseFlowMode">
+        <item-type>Number</item-type>
+        <label>@text/channel.GridReverseFlowMode.label</label>
+        <description>@text/channel.GridReverseFlowMode.description</description>
+        <state>
+            <options>
+                <option value="0">@text/channel.GridReverseFlowMode.DISABLED</option>
+                <option value="1">@text/channel.GridReverseFlowMode.REVERSE_FLOW_ALLOWED</option>
+                <option value="2">@text/channel.GridReverseFlowMode.REVERSE_FLOW_FORBIDDEN</option>
+            </options>
+        </state>
+    </channel-type>
+
+
+
+</thing:thing-descriptions>

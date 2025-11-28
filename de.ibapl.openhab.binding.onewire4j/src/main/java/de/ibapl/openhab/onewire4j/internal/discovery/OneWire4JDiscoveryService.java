@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -82,16 +82,24 @@ public class OneWire4JDiscoveryService extends AbstractDiscoveryService {
         stopScan();
     }
 
+    private ThingUID getThingUID(String deviceId, ThingUID bridgeUID, ThingTypeUID thingTypeUID) {
+        return new ThingUID(thingTypeUID, bridgeUID, deviceId);
+    }
+
+
     private void addDevice(long deviceId) {
         final String deviceIdStr = OneWireContainer.addressToString(deviceId);
-        final ThingUID thingUID = getThingUID(deviceIdStr);
-
         final ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
+
         try {
             final DiscoveryResult discoveryResult;
             OneWireDevice owd = OneWireDevice.fromAdress(deviceId);
             if (owd instanceof TemperatureContainer) {
-                discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(getThingTypeUID("temperature"))
+                final ThingTypeUID thingTypeUID = OneWire4JBindingConstants.ThingTypes.TEMPERATURE.thingTypeUID;
+                final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID, thingTypeUID);
+
+                discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                        .withThingType(thingTypeUID)
                         .withProperty("deviceId", deviceIdStr).withBridge(bridgeUID)
                         .withRepresentationProperty("deviceId")
                         .withLabel("Temp" + deviceIdStr)
@@ -99,7 +107,10 @@ public class OneWire4JDiscoveryService extends AbstractDiscoveryService {
                 thingDiscovered(discoveryResult);
             } else if (owd instanceof OneWireDevice26) {
                 //TODO humidity for now, but there are many other things battery moniotor ....
-                discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(getThingTypeUID("humidity"))
+                final ThingTypeUID thingTypeUID = OneWire4JBindingConstants.ThingTypes.HUMIDITY.thingTypeUID;
+                final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID, thingTypeUID);
+                discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                        .withThingType(thingTypeUID)
                         .withProperty("deviceId", deviceIdStr)
                         .withRepresentationProperty("deviceId")
                         .withBridge(bridgeUID)
@@ -107,7 +118,10 @@ public class OneWire4JDiscoveryService extends AbstractDiscoveryService {
                         .build();
                 thingDiscovered(discoveryResult);
             } else {
-                discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(getThingTypeUID("unknown"))
+                final ThingTypeUID thingTypeUID = OneWire4JBindingConstants.ThingTypes.UNKNOWN.thingTypeUID;
+                final ThingUID thingUID = getThingUID(deviceIdStr, bridgeUID, thingTypeUID);
+                discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                        .withThingType(thingTypeUID)
                         .withProperty("deviceId", deviceIdStr)
                         .withBridge(bridgeUID)
                         .withRepresentationProperty("deviceId")
@@ -119,17 +133,6 @@ public class OneWire4JDiscoveryService extends AbstractDiscoveryService {
             // Unknown device
             LOGGER.log(Level.SEVERE, "addDevice: " + deviceIdStr, e);
         }
-    }
-
-    private ThingUID getThingUID(String deviceId) {
-        ThingUID bridgeUID = spswBridgeHandler.getThing().getUID();
-        ThingTypeUID thingTypeUID = getThingTypeUID("temperature");
-
-        return new ThingUID(thingTypeUID, bridgeUID, deviceId);
-    }
-
-    private ThingTypeUID getThingTypeUID(String oneWireBinding) {
-        return new ThingTypeUID(OneWire4JBindingConstants.BINDING_ID, oneWireBinding);
     }
 
 }

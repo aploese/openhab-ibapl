@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -21,7 +21,6 @@
  */
 package de.ibapl.openhab.onewire4j.internal;
 
-import de.ibapl.openhab.onewire4j.OneWire4JBindingConstants;
 import de.ibapl.openhab.onewire4j.handler.HumidityHandler;
 import de.ibapl.openhab.onewire4j.handler.SpswBridgeHandler;
 import de.ibapl.openhab.onewire4j.handler.TemperatureHandler;
@@ -32,7 +31,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Thing;
@@ -44,6 +42,7 @@ import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import static de.ibapl.openhab.onewire4j.OneWire4JBindingConstants.ThingTypes;
 
 /**
  * The {@link OneWire4JHandlerFactory} is responsible for creating things and
@@ -54,11 +53,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ThingHandlerFactory.class, immediate = true, configurationPid = "binding.onewire4j")
 public class OneWire4JHandlerFactory extends BaseThingHandlerFactory {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(
-            OneWire4JBindingConstants.THING_TYPE_ONEWIRE_TEMPERATURE,
-            OneWire4JBindingConstants.THING_TYPE_ONEWIRE_HUMIDITY,
-            OneWire4JBindingConstants.BRIDGE_TYPE_ONEWIRE_RS232);
-
     @Reference
     private List<SerialPortSocketFactory> serialPortSocketFactories;
 
@@ -66,32 +60,33 @@ public class OneWire4JHandlerFactory extends BaseThingHandlerFactory {
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+        return ThingTypes.supportsThingType(thingTypeUID);
     }
 
     @Override
     protected ThingHandler createHandler(Thing thing) {
-        final ThingTypeUID thingTypeUID = thing.getThingTypeUID();
+        final ThingTypes thingType = ThingTypes.find(thing.getThingTypeUID());
 
-        if (thingTypeUID.equals(OneWire4JBindingConstants.THING_TYPE_ONEWIRE_TEMPERATURE)) {
-            return new TemperatureHandler(thing);
-        } else if (thingTypeUID.equals(OneWire4JBindingConstants.THING_TYPE_ONEWIRE_HUMIDITY)) {
-            return new HumidityHandler(thing);
-        } else if (thingTypeUID.equals(OneWire4JBindingConstants.BRIDGE_TYPE_ONEWIRE_RS232)) {
-            final SpswBridgeHandler spswBridgeHandler = new SpswBridgeHandler((Bridge) thing, serialPortSocketFactories);
-            registerDiscoveryService(spswBridgeHandler);
-            return spswBridgeHandler;
-        } else if (thingTypeUID.equals(OneWire4JBindingConstants.THING_TYPE_ONEWIRE_UNKNOWN)) {
-            return new UnknownDeviceHandler(thing);
-        } else {
-            return null;
-        }
+        return switch (thingType) {
+            case TEMPERATURE ->
+                new TemperatureHandler(thing);
+            case HUMIDITY ->
+                new HumidityHandler(thing);
+            case BRIDGE_RS232 ->
+                registerDiscoveryService(new SpswBridgeHandler((Bridge) thing, serialPortSocketFactories));
+            case UNKNOWN ->
+                new UnknownDeviceHandler(thing);
+            case SMART_BATTERY_MONITOR ->
+//TODO impement
+                null;
+        };
     }
 
-    private synchronized void registerDiscoveryService(SpswBridgeHandler spswBridgeHandler) {
+    private synchronized SpswBridgeHandler registerDiscoveryService(SpswBridgeHandler spswBridgeHandler) {
         OneWire4JDiscoveryService discoveryService = new OneWire4JDiscoveryService(spswBridgeHandler);
         this.discoveryServiceRegs.put(spswBridgeHandler.getThing().getUID(), bundleContext
                 .registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<>()));
+        return spswBridgeHandler;
     }
 
     @Override

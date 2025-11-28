@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -43,6 +43,7 @@ import de.ibapl.fhz4j.protocol.fht.FhtProperty;
 import de.ibapl.fhz4j.protocol.fs20.FS20Message;
 import de.ibapl.fhz4j.protocol.hms.HmsMessage;
 import de.ibapl.fhz4j.protocol.lacrosse.tx2.LaCrosseTx2Message;
+import de.ibapl.openhab.fhz4j.FHZ4JBindingConstants;
 import de.ibapl.spsw.api.SerialPortSocket;
 import de.ibapl.spsw.api.SerialPortSocketFactory;
 import de.ibapl.spsw.api.Speed;
@@ -60,10 +61,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +79,7 @@ import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.types.Command;
@@ -86,6 +91,17 @@ import org.openhab.core.types.Command;
 //TODO rename to something like CulHandler
 public class SpswBridgeHandler extends BaseBridgeHandler {
 
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS;
+    
+    static {
+        Set<ThingTypeUID> result = new HashSet<>();
+        for (FHZ4JBindingConstants.ThingTypes type : FHZ4JBindingConstants.ThingTypes.values()) {
+            if (type.isBridge == false) {
+                result.add(type.thingTypeUID);
+            } 
+        }
+        SUPPORTED_THING_TYPES_UIDS = Collections.unmodifiableSet(result);
+    }
     private class Listener implements CulMessageListener {
 
         float lastSignalStrength = Float.NaN;

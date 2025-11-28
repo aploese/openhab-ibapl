@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<features name="oh-ibapl-features-${project.version}"
+<features name="${project.artifactId}-${project.version}" 
           xmlns="http://karaf.apache.org/xmlns/features/v1.5.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
-
+    
     <feature name="de.ibapl.jnhw.jnhw" version="${jnhw.version}" description="JNHW">
         <bundle>mvn:de.ibapl.jnhw/de.ibapl.jnhw.libloader/${jnhw.version}</bundle>
         <bundle>mvn:de.ibapl.jnhw/de.ibapl.jnhw.common/${jnhw.version}</bundle>
@@ -22,33 +22,34 @@
         <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle>
         <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.jnhwprovider/${spsw.version}</bundle>
     </feature>
-
-    <feature name="de.ibapl.spsw.inmemoryprovider" version="${spsw.version}" description="JNHW in memory provider for serial port dummy">
-        <feature>de.ibapl.jnhw.jnhw</feature>
-        <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle>
-        <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.inmemoryprovider/${spsw.version}</bundle>
+    <feature name="openhab-automation-solarpowerdistributionmanager" description="Solar power distribution manager for Open HAB" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <bundle>mvn:de.ibapl.openhab.automation/de.ibapl.openhab.automation.solarpowerdistributionmanager/${project.version}</bundle>
     </feature>
-
     <feature name="openhab-binding-fhz4j" version="${openhab.fhz4j.version}" description="Fhz4J OH Binding">
         <feature>openhab-runtime-base</feature>
-        <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle>
+        <feature>de.ibapl.spsw.jnhwprovider</feature>
+        <feature>de.ibapl.spsw.jniprovider</feature>
         <bundle>mvn:de.ibapl.fhz4j/de.ibapl.fhz4j.parser.cul/${fhz4j.version}</bundle>
-        <bundle>mvn:de.ibapl.openhab/de.ibapl.openhab.binding.fhz4j/${openhab.fhz4j.version}</bundle>
+        <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.fhz4j/${openhab.fhz4j.version}</bundle>
     </feature>
-
     <feature name="openhab-binding-onewire4j" version="${openhab.onewire4j.version}" description="OneWire4J OH Binding">
         <feature>openhab-runtime-base</feature>
-        <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle>
+        <feature>de.ibapl.spsw.jnhwprovider</feature>
+        <feature>de.ibapl.spsw.jniprovider</feature>
         <bundle>mvn:de.ibapl.onewire4j/de.ibapl.onewire4j/${onewire4j.version}</bundle>
-        <bundle>mvn:de.ibapl.openhab/de.ibapl.openhab.binding.onewire4j/${openhab.onewire4j.version}</bundle>
+        <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.onewire4j/${openhab.onewire4j.version}</bundle>
     </feature>
-
-<!-- Yet to come
-        <feature name="openhab-binding-openv4j" version="${openhab.openv4j.version}" description="OpenV4J OH Binding">
+        <!--feature name="openhab-binding-openv4j" version="${openhab.openv4j.version}" description="OpenV4J OH Binding"-->
+        <!--feature>openhab-runtime-base</feature-->
+        <!--bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle-->
+        <!--bundle>mvn:de.ibapl.openv4j/de.ibapl.openv4j.core/${openv4j.version}</bundle-->
+        <!--bundle>mvn:de.ibapl.openhab/de.ibapl.openhab.binding.openv4j/${openhab.openv4j.version}</bundle-->
+    <feature name="openhab-binding-zendure" version="${project.version}" description="Zendure OH Binding">
         <feature>openhab-runtime-base</feature>
-        <bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle>
-        <bundle>mvn:de.ibapl.openv4j/de.ibapl.openv4j.core/${openv4j.version}</bundle>
-        <bundle>mvn:de.ibapl.openhab/de.ibapl.openhab.binding.openv4j/${openhab.openv4j.version}</bundle>
+        <!--feature>openhab-tp.gson</feature-->
+        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.zendure/${project.version}</bundle>
     </feature>
--->
+	<!-- aggregated features -->
 </features>

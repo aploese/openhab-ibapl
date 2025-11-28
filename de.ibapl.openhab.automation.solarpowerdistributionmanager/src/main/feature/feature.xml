@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="oh-ibapl-features-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.5.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
+    
+    <repository>mvn:org.openhab.core.features.karaf/org.openhab.core.features.karaf.openhab-core/${openhab.version}/xml/features</repository>
+
+    <feature name="openhab-automation-solarpowerdistributionmanager" description="Solar power distribution manager for Open HAB" version="${project.version}">
+        <feature>openhab-runtime-base</feature>
+        <bundle>mvn:de.ibapl.openhab.automation/de.ibapl.openhab.automation.solarpowerdistributionmanager/${project.version}</bundle>
+    </feature>
+</features>

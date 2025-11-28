@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -21,6 +21,9 @@
  */
 package de.ibapl.openhab.onewire4j;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import org.openhab.core.thing.ThingTypeUID;
 
 /**
@@ -33,14 +36,38 @@ public class OneWire4JBindingConstants {
 
     public static final String BINDING_ID = "onewire4j";
 
-    // List of all Thing Type UIDs
-    public static final ThingTypeUID THING_TYPE_ONEWIRE_TEMPERATURE = new ThingTypeUID(BINDING_ID, "temperature");
-    public static final ThingTypeUID THING_TYPE_ONEWIRE_HUMIDITY = new ThingTypeUID(BINDING_ID, "humidity");
-    public static final ThingTypeUID THING_TYPE_ONEWIRE_SMART_BATTERY_MONITOR = new ThingTypeUID(BINDING_ID, "smart_battery_monitor");
-    public static final ThingTypeUID THING_TYPE_ONEWIRE_UNKNOWN = new ThingTypeUID(BINDING_ID, "unknown");
+    public enum ThingTypes {
+        TEMPERATURE("temperature", false),
+        HUMIDITY("humidity", false),
+        SMART_BATTERY_MONITOR("smart_battery_monitor", false),
+        UNKNOWN("unknown", false),
+        BRIDGE_RS232("rs232-bridge", true);
 
-    // List of all Bridge Type UIDs
-    public static final ThingTypeUID BRIDGE_TYPE_ONEWIRE_RS232 = new ThingTypeUID(BINDING_ID, "rs232-bridge");
+        private final static Map<ThingTypeUID, ThingTypes> supportedThingTypeUIDs = new HashMap<ThingTypeUID, ThingTypes>();
+
+        public static ThingTypes find(ThingTypeUID thingTypeUID) {
+            return supportedThingTypeUIDs.get(thingTypeUID);
+        }
+
+        public static boolean supportsThingType(ThingTypeUID thingTypeUID) {
+            return supportedThingTypeUIDs.containsKey(thingTypeUID);
+        }
+
+        public final ThingTypeUID thingTypeUID;
+        public final boolean isBridge;
+
+        private ThingTypes(String thingTypeId, boolean isBridge) {
+            thingTypeUID = new ThingTypeUID(BINDING_ID, thingTypeId);
+            this.isBridge = isBridge;
+        }
+
+
+        static {
+            for (ThingTypes uid : ThingTypes.values()) {
+                supportedThingTypeUIDs.put(uid.thingTypeUID, uid);
+            }
+        }
+    }
 
     // List of all Channel ids
     public static final String CHANNEL_TEMPERATURE = "temperature";

@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -112,9 +112,10 @@ public class RadiatorFht80bHandler extends BaseThingHandler {
                     } catch (IOException e) {
                         LOGGER.log(Level.SEVERE, "handleCommand CHANNEL_DESIRED_TEMPERATURE", e);
                     }
-                } else if (command instanceof RefreshType) {
+                } else {
                     //TODO
-                    desiredTemp = 17.0f;
+                    LOGGER.log(Level.SEVERE, "Can't handle command {0} of CHANNEL_DESIRED_TEMPERATURE in handleCommand!", command);
+                    //desiredTemp = 17.0f;
                     // updateState(new ChannelUID(getThing().getUID(), CHANNEL_TEMPERATURE), new DecimalType(00.00));
                 }
             }

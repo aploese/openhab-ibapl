@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -21,7 +21,6 @@
  */
 package de.ibapl.openhab.fhz4j.internal;
 
-import de.ibapl.openhab.fhz4j.FHZ4JBindingConstants;
 import de.ibapl.openhab.fhz4j.handler.Em1000EmHandler;
 import de.ibapl.openhab.fhz4j.handler.EvoHomeHandler;
 import de.ibapl.openhab.fhz4j.handler.Fht80TfHandler;
@@ -35,7 +34,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.scheduler.CronScheduler;
@@ -49,6 +47,7 @@ import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import static de.ibapl.openhab.fhz4j.FHZ4JBindingConstants.ThingTypes;
 
 /**
  * The {@link FHZ4JHandlerFactory} is responsible for creating things and thing
@@ -61,16 +60,6 @@ public class FHZ4JHandlerFactory extends BaseThingHandlerFactory {
 
     private static final Logger logger = Logger.getLogger("d.i.o.f.i.FHZ4JHandlerFactory");
 
-    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_FHT80B,
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_FHT80_TF,
-            FHZ4JBindingConstants.BRIDGE_TYPE_FHZ4J_RS232,
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_EM_1000_EM,
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_HMS_100_TF,
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_EVO_HOME,
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_SINGLE_ZONE_THERMOSTAT_EVO_HOME,
-            FHZ4JBindingConstants.THING_TYPE_FHZ4J_MULTI_ZONE_CONTROLLER_EVO_HOME);
-
     @Reference
     private List<SerialPortSocketFactory> serialPortSocketFactories;
 
@@ -81,54 +70,40 @@ public class FHZ4JHandlerFactory extends BaseThingHandlerFactory {
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+        return ThingTypes.supportsThingType(thingTypeUID);
     }
 
     @Override
     protected ThingHandler createHandler(Thing thing) {
-        final ThingTypeUID thingTypeUID = thing.getThingTypeUID();
+        final ThingTypes thingType = ThingTypes.find(thing.getThingTypeUID());
 
-        if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_FHT80B)) {
-            return new RadiatorFht80bHandler(thing, cronScheduler);
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_FHT80_TF)) {
-            return new Fht80TfHandler(thing);
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_RADIATOR_EVO_HOME)) {
-            return new EvoHomeHandler(thing);
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_SINGLE_ZONE_THERMOSTAT_EVO_HOME)) {
-            return new EvoHomeHandler(thing);
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_MULTI_ZONE_CONTROLLER_EVO_HOME)) {
-            return new EvoHomeHandler(thing);
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_EM_1000_EM)) {
-            final Em1000EmHandler em1000EmHandler = new Em1000EmHandler(thing);
-            return em1000EmHandler;
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_HMS_100_TF)) {
-            final Hms100TfHandler hms100TkHandler = new Hms100TfHandler(thing);
-            return hms100TkHandler;
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.BRIDGE_TYPE_FHZ4J_RS232)) {
-            if (serialPortSocketFactories == null) {
-                logger.severe("serialPortSocketFactories == null");
-                //TODO
-                return null;
-            } else if (serialPortSocketFactories.isEmpty()) {
-                logger.severe("serialPortSocketFactories is empty");
-                //TODO
-                return null;
-            } else {
-                final SpswBridgeHandler spswBridgeHandler = new SpswBridgeHandler((Bridge) thing, serialPortSocketFactories, cronScheduler);
-                registerDiscoveryService(spswBridgeHandler);
-                return spswBridgeHandler;
-            }
-        } else if (thingTypeUID.equals(FHZ4JBindingConstants.THING_TYPE_FHZ4J_UNKNOWN)) {
-            return new UnknownDeviceHandler(thing);
-        } else {
-            return null;
-        }
+        return switch (thingType) {
+            case RADIATOR_FHT80B ->
+                new RadiatorFht80bHandler(thing, cronScheduler);
+            case FHT80_TF ->
+                new Fht80TfHandler(thing);
+            case RADIATOR_EVO_HOME ->
+                new EvoHomeHandler(thing);
+            case SINGLE_ZONE_THERMOSTAT_EVO_HOME ->
+                new EvoHomeHandler(thing);
+            case MULTI_ZONE_CONTROLLER_EVO_HOME ->
+                new EvoHomeHandler(thing);
+            case EM_1000_EM ->
+                new Em1000EmHandler(thing);
+            case HMS_100_TF ->
+                new Hms100TfHandler(thing);
+            case BRIDGE_RS232 ->
+                registerDiscoveryService(new SpswBridgeHandler((Bridge) thing, serialPortSocketFactories, cronScheduler));
+            case UNKNOWN ->
+                new UnknownDeviceHandler(thing);
+        };
     }
 
-    private synchronized void registerDiscoveryService(SpswBridgeHandler spswBridgeHandler) {
+    private synchronized SpswBridgeHandler registerDiscoveryService(final SpswBridgeHandler spswBridgeHandler) {
         FHZ4JDiscoveryService discoveryService = new FHZ4JDiscoveryService(spswBridgeHandler);
         this.discoveryServiceRegs.put(spswBridgeHandler.getThing().getUID(),
                 bundleContext.registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<>()));
+        return spswBridgeHandler;
     }
 
     @Override

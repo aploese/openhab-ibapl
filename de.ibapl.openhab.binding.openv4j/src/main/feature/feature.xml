@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="oh-ibapl-features-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.5.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.5.0 http://karaf.apache.org/xmlns/features/v1.5.0">
+    
+    <repository>mvn:org.openhab.core.features.karaf/org.openhab.core.features.karaf.openhab-core/${openhab.version}/xml/features</repository>
+
+    <!-- Yet to come -->
+        <!--feature name="openhab-binding-openv4j" version="${openhab.openv4j.version}" description="OpenV4J OH Binding"-->
+        <!--feature>openhab-runtime-base</feature-->
+        <!--bundle>mvn:de.ibapl.spsw/de.ibapl.spsw.api/${spsw.version}</bundle-->
+        <!--bundle>mvn:de.ibapl.openv4j/de.ibapl.openv4j.core/${openv4j.version}</bundle-->
+        <!--bundle>mvn:de.ibapl.openhab/de.ibapl.openhab.binding.openv4j/${openhab.openv4j.version}</bundle-->
+    <!-- /feature-->
+
+</features>

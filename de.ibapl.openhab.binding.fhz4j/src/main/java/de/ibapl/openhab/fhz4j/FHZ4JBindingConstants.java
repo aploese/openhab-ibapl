@@ -1,6 +1,6 @@
 /*
  * ESH-IBAPL  - OpenHAB bindings for various IB APL drivers, https://github.com/aploese/esh-ibapl/
- * Copyright (C) 2024, Arne Plöse and individual contributors as indicated
+ * Copyright (C) 2024-2025, Arne Plöse and individual contributors as indicated
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -21,6 +21,8 @@
  */
 package de.ibapl.openhab.fhz4j;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.openhab.core.thing.ThingTypeUID;
 
 /**
@@ -33,18 +35,42 @@ public class FHZ4JBindingConstants {
 
     public static final String BINDING_ID = "fhz4j";
 
-    // List of all Thing Type UIDs
-    public static final ThingTypeUID THING_TYPE_FHZ4J_RADIATOR_FHT80B = new ThingTypeUID(BINDING_ID, "fht80b");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_FHT80_TF = new ThingTypeUID(BINDING_ID, "fht80-tf");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_UNKNOWN = new ThingTypeUID(BINDING_ID, "unknown");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_EM_1000_EM = new ThingTypeUID(BINDING_ID, "em-1000-em");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_HMS_100_TF = new ThingTypeUID(BINDING_ID, "hms-100-tf");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_RADIATOR_EVO_HOME = new ThingTypeUID(BINDING_ID, "evo-home-radiator");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_SINGLE_ZONE_THERMOSTAT_EVO_HOME = new ThingTypeUID(BINDING_ID, "evo-home-single-zone-thermostat");
-    public static final ThingTypeUID THING_TYPE_FHZ4J_MULTI_ZONE_CONTROLLER_EVO_HOME = new ThingTypeUID(BINDING_ID, "evo-home-multi-zone-controller");
+    public enum ThingTypes {
 
-    // List of all Bridge Type UIDs
-    public static final ThingTypeUID BRIDGE_TYPE_FHZ4J_RS232 = new ThingTypeUID(BINDING_ID, "rs232-bridge-cul");
+        RADIATOR_FHT80B("fht80b", false),
+        FHT80_TF("fht80-tf", false),
+        UNKNOWN("unknown", false),
+        EM_1000_EM("em-1000-em", false),
+        HMS_100_TF("hms-100-tf", false),
+        RADIATOR_EVO_HOME("evo-home-radiator", false),
+        SINGLE_ZONE_THERMOSTAT_EVO_HOME("evo-home-single-zone-thermostat", false),
+        MULTI_ZONE_CONTROLLER_EVO_HOME("evo-home-multi-zone-controller", false),
+        BRIDGE_RS232("rs232-bridge-cul", true);
+
+        private final static Map<ThingTypeUID, ThingTypes> supportedThingTypeUIDs = new HashMap<ThingTypeUID, ThingTypes>();
+
+        public static ThingTypes find(ThingTypeUID thingTypeUID) {
+            return supportedThingTypeUIDs.get(thingTypeUID);
+        }
+
+        public static boolean supportsThingType(ThingTypeUID thingTypeUID) {
+            return supportedThingTypeUIDs.containsKey(thingTypeUID);
+        }
+
+        public final ThingTypeUID thingTypeUID;
+        public final boolean isBridge;
+
+        private ThingTypes(String thingTypeId, boolean isBridge) {
+            thingTypeUID = new ThingTypeUID(BINDING_ID, thingTypeId);
+            this.isBridge = isBridge;
+        }
+
+        static {
+            for (ThingTypes uid : ThingTypes.values()) {
+                supportedThingTypeUIDs.put(uid.thingTypeUID, uid);
+            }
+        }
+    }
 
     // List of all Channel ids
     public static final String CHANNEL_MODE = "mode";
