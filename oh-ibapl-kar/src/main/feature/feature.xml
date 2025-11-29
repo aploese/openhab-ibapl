@@ -48,7 +48,9 @@
     <feature name="openhab-binding-zendure" version="${project.version}" description="Zendure OH Binding">
         <feature>openhab-runtime-base</feature>
         <!--feature>openhab-tp.gson</feature-->
-        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <!--bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle-->
+        <!--bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle-->
+        <feature dependency="true">openhab.tp-gson</feature>
         <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.zendure/${project.version}</bundle>
     </feature>
 	<!-- aggregated features -->

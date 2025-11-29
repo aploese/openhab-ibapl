@@ -10,7 +10,9 @@
         <feature>openhab-runtime-base</feature>
         <!-- TODO https://openhab.jfrog.io/openhab/libs-release/ contains an older one... -->
         <!--feature>openhab-tp.gson</feature-->
-        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <!--bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle-->
+        <!--bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle-->
+        <feature dependency="true">openhab.tp-gson</feature>
         <bundle>mvn:de.ibapl.openhab.binding/de.ibapl.openhab.binding.zendure/${project.version}</bundle>
     </feature>
     

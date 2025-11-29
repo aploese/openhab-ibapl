@@ -312,7 +312,6 @@ public class GenericZendureDeviceHandler extends BaseBridgeHandler {
         String name = reader.nextName();
         if ("sn".equals(name)) {
             final String sn = reader.nextString();
-//            updateState(new ChannelUID(getThing().getUID(), Channels.), new DecimalType(reader.nextInt()));
 //"lifted" from      https://github.com/Zendure/Zendure-HA/blob/master/custom_components/zendure_ha/device.py  
             switch (sn.charAt(0)) {
                 case 'A' -> {
@@ -605,7 +604,7 @@ public class GenericZendureDeviceHandler extends BaseBridgeHandler {
                 throw new RuntimeException("Cant handle devicetype! please report this as Error!" + zendureDeviceType);
         }
 
-        //Bypass 0: No, 1: Yes 
+        //Bypass 0: No, 1: Yes ?TODO APL we will see 2 sporadically ?
         name = reader.nextName();
         if ("pass".equals(name)) {
             final int pass = reader.nextInt();
@@ -616,7 +615,7 @@ public class GenericZendureDeviceHandler extends BaseBridgeHandler {
                 case 1 ->
                     deviceState |= DeviceStateEntries.BYPASSING;
                 default ->
-                    throw new RuntimeException("Unknown value for pass: " + pass);
+                    throw new RuntimeException("Unknown value for pass: " + pass + " for ting UID" + thing.getUID()); //TODO to all others...
             }
         } else {
             throw new RuntimeException("expected \"pass\" but found: \"" + name + '\"');
@@ -1277,14 +1276,18 @@ public class GenericZendureDeviceHandler extends BaseBridgeHandler {
                         jsonWriter.name("outputLimit");
                         jsonWriter.value(0);
                     } else if (value < 0) {
-                        //Input
+                        //Input to Inverter (Energyflow from inverter to battery pack)
+                        //Zendure Zen Cloud sets this to max 
+                        //SolarFlow 800     max 1200W
+                        //SolarFlow 800 Pro max 2000W
+                        //but inverseMaxPower can only be set to max 800W in Germany???
                         jsonWriter.value(0);
                         jsonWriter.name("inputLimit");
                         jsonWriter.value(-value);
                         jsonWriter.name("outputLimit");
                         jsonWriter.value(0);
                     } else if (value > 0) {
-                        //Output
+                        //Output to Battery
                         jsonWriter.value(0);
                         jsonWriter.name("inputLimit");
                         jsonWriter.value(0);
